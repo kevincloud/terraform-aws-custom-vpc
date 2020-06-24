@@ -1,6 +1,7 @@
 resource "aws_vpc" "primary-vpc" {
     cidr_block = "10.0.0.0/16"
     enable_dns_hostnames = true
+    tags = var.tags
 }
 
 module "custom-igw" {
@@ -8,16 +9,15 @@ module "custom-igw" {
   version = "1.0.1"
 
   vpc_id = aws_vpc.primary-vpc.id
+  tags = var.tags
 }
-# resource "aws_internet_gateway" "igw" {
-#     vpc_id = aws_vpc.primary-vpc.id
-# }
 
 resource "aws_subnet" "public-subnet" {
     vpc_id = aws_vpc.primary-vpc.id
     cidr_block = "10.0.1.0/24"
     availability_zone = "${var.aws_region}a"
     map_public_ip_on_launch = true
+    tags = var.tags
     depends_on = [module.custom-igw]
 }
 
@@ -33,6 +33,7 @@ resource "aws_route_table" "igw-route" {
         cidr_block = "0.0.0.0/0"
         gateway_id = module.custom-igw.id
     }
+    tags = var.tags
 }
 
 resource "aws_route_table_association" "route-out" {
