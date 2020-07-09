@@ -6,7 +6,6 @@ resource "aws_vpc" "primary-vpc" {
 
 module "custom-igw" {
   source  = "app.terraform.io/peter-demo/custom-igw/aws"
-  version = "1.0.3"
 
   vpc_id = aws_vpc.primary-vpc.id
   tags = var.tags
